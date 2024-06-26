@@ -4,6 +4,7 @@ const {Client, Pool} = pkg;
 
 export default class ProvinceRepository
 {
+    //Listar provincias endpoint:
     getAllAsync = async () =>
     {
         let returnArray = null;
@@ -11,7 +12,7 @@ export default class ProvinceRepository
         try
         {
             await client.connect();
-            const sql = 'SELECT * FROM provinces';
+            const sql = "SELECT * FROM provinces";
             const result = await client.query(sql);
             await client.end();
             returnArray = result.rows;

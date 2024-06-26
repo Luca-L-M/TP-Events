@@ -11,10 +11,10 @@ export default class EventServices
     }
 
     //Buscar eventos, ver como hacer para utilizar más de 1 a la vez
-    getAllByFiltroAsync = async (filtro) =>
+    getAllByFilterAsync = async (filtro) =>
     {
         const repo = new EventRepository();
-        const returnArray = await repo.getAllAsync(filtro);
+        const returnArray = await repo.getAllByFilterAsync(filtro);
         return returnArray;
     }
 

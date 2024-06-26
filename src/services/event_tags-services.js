@@ -1,4 +1,4 @@
-import Event_tagsRepository from './../repositories/event_tags-repositories.js';
+import Event_tagsRepository from '../repositories/event_tags-repositories.js';
 
 export default class Event_tagsServices
 {

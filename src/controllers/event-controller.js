@@ -1,6 +1,6 @@
 import {Router} from 'express';
 import EventServices from '../services/event-services.js';
-import Event_enrollmentServices from '../../EventEnrollment/services/Event_enrollment-services.js';
+import Event_enrollmentServices from '../services/Event_enrollment-services.js';
 const router = Router();
 const svc = new EventServices();
 
@@ -20,7 +20,7 @@ router.get('', async (req, res) =>{
 router.get('', async (req, res) =>{
     let respuesta;
     const filtro = req.query;
-    const returnArray = await svc.getAllByFiltroAsync(filtro);
+    const returnArray = await svc.getAllByFilterAsync(filtro);
     if (returnArray != null)
     {
         respuesta = res.status(200).json(returnArray);

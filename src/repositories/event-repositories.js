@@ -12,7 +12,7 @@ export default class EventRepository
         try
         {
             await client.connect();
-            let sql = `SELECT E.id, E.name, E.description, E.start_date, E.duration_in_minutes, E.price, E.enabled_for_enrollment, E.max_assistance, 
+            const sql = `SELECT E.id, E.name, E.description, E.start_date, E.duration_in_minutes, E.price, E.enabled_for_enrollment, E.max_assistance, 
             json_build_object('id',U.id, 'first_name',U.first_name, 'last_name',U.last_name, 'username',U.username, 'password','*****') As User,
             json_build_object('id',C.id 'name',C.name, 'display_order', C.display_order) As Category,
             json_build_object('id',EL.id, 'id_location',EL.id_location, 'name',EL.name, 'full_address',EL.full_address, 'max_capacity',EL.max_capacity, 'latitude',EL.latitude, 'longitude',EL.longitude, 'id_creator_user',EL.id_creator_user) As Ubication
@@ -33,7 +33,7 @@ export default class EventRepository
     }
 
     //Buscar eventos Endpoint:
-    getAllByFiltroAsync = async (filtro) =>
+    getAllByFilterAsync = async (filtro) =>
     {
         let returnArray = null;
         const client = new Client(DBConfig);

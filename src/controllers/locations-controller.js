@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import LocationServices from './../services/location-services.js'
+import LocationServices from '../services/location-services.js'
 const router = Router();
 const svc = new LocationServices();
 

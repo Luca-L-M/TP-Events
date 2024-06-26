@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import ProvinceServices from './../services/province-services.js'
+import ProvinceServices from '../services/province-services.js'
 const router = Router();
 const svc = new ProvinceServices();
 
