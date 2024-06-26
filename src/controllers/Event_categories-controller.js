@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import Event_categoriesServices from '../services/Event_categories-services.js'
+import Event_categoriesServices from '../services/Event_categories-services.js';
 const router = Router();
 const svc = new Event_categoriesServices();
 

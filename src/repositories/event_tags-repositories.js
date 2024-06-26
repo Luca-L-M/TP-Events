@@ -1,4 +1,4 @@
-import DBConfig from '../../configs/dbConfig.js';
+import DBConfig from '../configs/dbConfig.js';
 import pkg from 'pg';
 const {Client, Pool} = pkg;
 
