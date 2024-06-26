@@ -3,18 +3,10 @@ import EventRepository from '../repositories/event-repositories.js';
 export default class EventServices
 {
     //Listar eventos
-    getAllAsync = async () =>
+    getAllAsync = async (filtro) =>
     {
         const repo = new EventRepository();
-        const returnArray = await repo.getAllAsync();
-        return returnArray;
-    }
-
-    //Buscar eventos, ver como hacer para utilizar más de 1 a la vez
-    getAllByFilterAsync = async (filtro) =>
-    {
-        const repo = new EventRepository();
-        const returnArray = await repo.getAllByFilterAsync(filtro);
+        const returnArray = await repo.getAllAsync(filtro);
         return returnArray;
     }
 

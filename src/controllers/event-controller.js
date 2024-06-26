@@ -7,20 +7,9 @@ const svc = new EventServices();
 //Listar eventos
 router.get('', async (req, res) =>{
     let respuesta;
-    const returnArray = await svc.getAllAsync();
-    if (returnArray != null)
-    {
-        respuesta = res.status(200).json(returnArray);
-    }
-    else respuesta = res.status(500).send('Error interno')
-    return respuesta;
-});
-
-//Buscar evento
-router.get('', async (req, res) =>{
-    let respuesta;
     const filtro = req.query;
-    const returnArray = await svc.getAllByFilterAsync(filtro);
+    console.log(filtro);
+    const returnArray = await svc.getAllAsync(filtro);
     if (returnArray != null)
     {
         respuesta = res.status(200).json(returnArray);
