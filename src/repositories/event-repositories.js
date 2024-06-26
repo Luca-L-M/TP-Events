@@ -72,7 +72,7 @@ export default class EventRepository
         try
         {
             await client.connect();
-            let sql = `SELECT E.id, E.name, E.description, E.start_date, E.duration_in_minutes, E.price, E.enabled_for_enrollment, E.max_assistance, 
+            /*let sql = `SELECT E.id, E.name, E.description, E.start_date, E.duration_in_minutes, E.price, E.enabled_for_enrollment, E.max_assistance, 
             json_build_object('id',EL.id, 'id_location',EL.id_location, 'name',EL.name, 'full_address',EL.full_address, 'max_capacity',EL.max_capacity, 'latitude',EL.latitude, 'longitude',EL.longitude, 'id_creator_user',EL.id_creator_user,
                 json_build_object('id',L.id, 'name',L.name, 'id_province',L.id_province, 'latitude',L.latitude, 'longitude',L.longitude,
                     json_build_object('id',P.id, 'name',P.name, 'full_name',P.full_name, 'latitude',P.latitude, 'longitude',P.longitude, 'display_order',P.display_order) AS "Province") AS "Location",
@@ -84,7 +84,32 @@ export default class EventRepository
             INNER JOIN event_categories AS C ON E.id_event_category = C.id
             INNER JOIN event_locations AS EL ON E.id_event_location = EL.id INNER JOIN locations AS L ON EL.id_location = L.id INNER JOIN provinces AS P ON L.id_province = P.id
             INNER JOIN event_tags AS ET ON E.id = ET.id_event INNER JOIN tags AS T ON ET.id_tag = T.id
-            Where E.id = ${id}`;
+            Where E.id = ${id}`;*/
+            let sql = `
+            SELECT 
+                E.id, 
+                E.name, 
+                E.description, 
+                E.start_date, 
+                E.duration_in_minutes, 
+                E.price, 
+                E.enabled_for_enrollment, 
+                E.max_assistance, 
+                json_build_object('id', EL.id, 'id_location', EL.id_location, 'name', EL.name, 'full_address', EL.full_address, 'max_capacity', EL.max_capacity, 'latitude', EL.latitude, 'longitude', EL.longitude, 'id_creator_user', EL.id_creator_user) AS "Location",
+                json_build_object('id', U.id, 'first_name', U.first_name, 'last_name', U.last_name, 'username', U.username, 'password', '*****') AS "Creator_user",
+                json_build_object('id', T.id, 'name', T.name) AS "Tags",
+                json_build_object('id', C.id, 'name', C.name, 'display_order', C.display_order) AS "Category"
+            FROM 
+                events AS E 
+                INNER JOIN users AS U ON E.id_creator_user = U.id
+                INNER JOIN event_categories AS C ON E.id_event_category = C.id
+                INNER JOIN event_locations AS EL ON E.id_event_location = EL.id 
+                INNER JOIN locations AS L ON EL.id_location = L.id 
+                INNER JOIN provinces AS P ON L.id_province = P.id
+                INNER JOIN event_tags AS ET ON E.id = ET.id_event 
+                INNER JOIN tags AS T ON ET.id_tag = T.id
+            WHERE 
+                E.id = ${id}`;
             const events = await client.query(sql);
             await client.end();
             returnArray = result.rows;
