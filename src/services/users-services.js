@@ -1,11 +1,11 @@
-import UsersRepository from '../repositories/usesr-repositories.js';
+import UsersRepository from '../repositories/users-repositories.js';
 
 export default class UsersServices
 {
     LoginAsync = async (entity) =>
     {
-        const repo = new UsersRepository(entity);
-        const returnArray = await repo.LoginAsync();
+        const repo = new UsersRepository();
+        const returnArray = await repo.LoginAsync(entity);
         return returnArray;
     }
 }

@@ -1,6 +1,6 @@
 import {Router} from 'express';
 import EventServices from '../services/event-services.js';
-import Event_enrollmentServices from '../services/Event_enrollment-services.js';
+import Event_enrollmentServices from '../services/event_enrollment-services.js';
 const router = Router();
 const svc = new EventServices();
 

@@ -71,7 +71,7 @@ export default class ProvinceRepository
         {
             await client.connect();
             const sql = `Update provinces Set name= $1, full_name= $2, latitude= $3, longitude= $4, display_order= $5 Where id= $6`;
-            let values = [entity.name, entity.full_name, entity.latitude, entity.longitude, entity.display_order, entity.id]
+            const values = [entity.name, entity.full_name, entity.latitude, entity.longitude, entity.display_order, entity.id];
             const result = await client.query(sql, values);
             await client.end();
             returnArray = result.rows;

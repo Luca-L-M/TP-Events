@@ -1,4 +1,4 @@
-import Event_CategoriesRepository from '../repositories/Event_categories-repositories.js';
+import Event_CategoriesRepository from '../repositories/event_categories-repositories.js';
 
 export default class Event_categoriesServices
 {

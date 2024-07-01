@@ -1,4 +1,4 @@
-import Event_locationRepository from '../repositories/Event_location-repositories.js';
+import Event_locationRepository from '../repositories/event_location-repositories.js';
 
 export default class Event_locationServices
 {

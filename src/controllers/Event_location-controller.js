@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import Event_locationServices from '../services/Event_location-services.js'
+import Event_locationServices from '../services/event_location-services.js'
 const router = Router();
 const svc = new Event_locationServices();
 

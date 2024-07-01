@@ -22,8 +22,8 @@ export default class UsersRepository
             {
                 expiresIn: '1h'
             };
-
-            const sql = `select * From users Where username = ${entity.username}, password = ${entity.password}`;
+            const sql = `select * From users Where username= $1 And password= $2`;
+            const values = [entity.username, entity.password];
             const consulta = await client.query(sql, values);
             await client.end();
             if(consulta != null)
@@ -35,7 +35,8 @@ export default class UsersRepository
                     message: '',
                     token: token
                 }
-                returnArray = result.rows;
+                console.log(result);
+                returnArray = result;
             }
         }
         catch (error)

@@ -33,7 +33,6 @@ export default class EventRepository
                 inner join tags As T on ET.id_tag = T.id
             Where 1=1`;
             const values = [];
-
             if (filtro.hasOwnProperty("name")) {
                 sql += ` AND E.name = $${values.length + 1}`;
                 values.push(filtro.name);
