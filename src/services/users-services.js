@@ -8,4 +8,10 @@ export default class UsersServices
         const returnArray = await repo.LoginAsync(entity);
         return returnArray;
     }
+    RegisterAsync = async (entity) =>
+    {
+        const repo = new UsersRepository();
+        const returnArray = await repo.LoginAsync(entity);
+        return returnArray;
+    }
 }

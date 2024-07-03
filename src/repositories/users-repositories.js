@@ -1,7 +1,9 @@
-import DBConfig from '../configs/dbConfig.js';
-import pkg from 'pg';
+import DataBaseHelper from '../helpers/db-helper.js';
 import jwt from 'jsonwebtoken';
-const {Client, Pool} = pkg;
+import DBConfig from './../configs/dbConfig.js';
+import pkg from 'pg';
+const {Client} = pkg;
+
 
 export default class UsersRepository
 {
@@ -43,6 +45,17 @@ export default class UsersRepository
         {
             console.log(error);
         }
+        return returnArray;
+    }
+
+    RegisterAsync = async (entity) =>
+    {
+        let returnArray = null;
+        const client = new Client(DBConfig);
+        await client.connect();
+        const sql = `Insert into Users(first_name, last_name, username, password) Values ($1,$2,$3,$4)`;
+        const values = [entity.first_name, entity.last_name, entity.username, entity.password];
+        returnArray = DataBaseHelper.requestCount(sql, values);
         return returnArray;
     }
 }
