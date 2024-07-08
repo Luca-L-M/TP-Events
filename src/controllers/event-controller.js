@@ -48,22 +48,34 @@ router.get('/:id/enrollment', async (req, res) =>{
 
 //Crear evento
 router.post('', async (req, res) =>{
-    if (AutheticationHelper.authenticationToken(req.token))
-    {
-        let respuesta;
-        const entity = req.body;
-        const max_capcity = await svc.getMaxCapacity(entity.id_location);
-        if (ValidationHelper.validarString(entity.name) && ValidationHelper.validarString(entity.descripcion) && max_assistance > max_capcity)
+    try {
+        if (AutheticationHelper.authenticationToken(req.token))
         {
-            const returnArray = await svc.createEventAsync(entity);
-            if (returnArray != null)
+            const entity = req.body;
+            const max_capcity = await svc.getMaxCapacity(entity.id_location);
+            if (!(ValidationHelper.validarString(entity.name) || ValidationHelper.validarString(entity.descripcion)))
             {
-                respuesta = res.status(201).json(returnArray);
+                return res.status(400).send('El name o description están vacíos o tienen menos de tres (3) letras');
             }
-            else respuesta = res.status(400).send('Error interno')
+            else if (!(entity.max_assistance > max_capcity))
+            {
+                return res.status(400).send('El max_assistance es mayor que el max_capacity del  id_event_location');
+            }
+            else if (!(ValidationHelper.validarInt(entity.price) && ValidationHelper.validarInt(entity.duration_in_minutes)))
+            {
+                return res.status(400).send('El price o duration_in_minutes son menores que cero');
+            }
+            else
+            {
+                const returnArray = await svc.createEventAsync(entity);
+                return res.status(201).json(returnArray);
+            }
         }
+        else respuesta = res.status(401).send('Unauthorized');
+    } catch (error) {
+        return res.status(400).send('Bad interno');
     }
-    else respuesta = res.status(401).send('Unauthorized')
+    
     return respuesta;
 });
 

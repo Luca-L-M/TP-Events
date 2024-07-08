@@ -38,27 +38,32 @@ router.get('/:id/location', async (req, res) =>{
     {
         respuesta = res.status(200).json(returnArray);
     }
-    else respuesta = res.status(404).send('No se encontro ningun resultado')
+    else respuesta = res.status(404).send('No se encontro ningun resultado');
     return respuesta;
 });
 
 router.post('', async (req, res) =>{
-    let respuesta;
-    let entity = req.body;
-    if (ValidationHelper.validarString(entity.name) &&  ValidationHelper.validarInt(entity.latitude) && ValidationHelper.validarInt(entity.longitude))
-    {
-        respuesta = res.status(400).send('Bad request')
-    }
-    else
-    {
-        const returnArray = await svc.createAsync(entity);
-        console.log(returnArray);
-        if (returnArray != null)
+    try {
+        const entity = req.body;
+        if (!(ValidationHelper.validarString(entity.name)))
         {
-            respuesta = res.status(201).send('La provincia fue creada con exito');
+            res.status(400).send('El campo name está vacío o tiene menos de tres (3) letras');
         }
+        else if (!(ValidationHelper.validarInt(entity.latitude) && ValidationHelper.validarInt(entity.longitude)))
+        {
+            res.status(400).send('Los campos latitude y longitude no son números');
+        }
+        else
+        {
+            const returnArray = await svc.createAsync(entity);
+            if (returnArray != null)
+            {
+                res.status(201).send('La provincia fue creada con exito');
+            }
+        }
+    } catch (error) {
+        
     }
-    return respuesta;
 });
 
 router.put('', async (req, res) =>{
