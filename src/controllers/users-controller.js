@@ -20,19 +20,21 @@ router.post('/login', async (req, res) =>{
 
 //registro
 router.post('/register', async (req, res) =>{
-    let respuesta;
-    const entity = req.body;
-    const returnArray = await svc.RegisterAsync(entity);
-    if (ValidationHelper.validarMail(entity.username))
-    {
-        respuesta = res.status(400).send('mail invalido');
+    try {
+        const entity = req.body;
+        const returnArray = await svc.RegisterAsync(entity);
+        if (ValidationHelper.validarMail(entity.username))
+        {
+            return res.status(400).send('mail invalido');
+        }
+        else if (returnArray != null)
+        {
+            return res.status(201).json(returnArray);
+        }
+        else return res.status(400).send('Error interno');
+    } catch (e) {
+        console.log(e);
     }
-    else if (returnArray != null)
-    {
-        respuesta = res.status(201).json(returnArray);
-    }
-    else respuesta = res.status(400).send('Error interno');
-    return respuesta;
 });
 
 export default router;

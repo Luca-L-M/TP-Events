@@ -61,8 +61,8 @@ router.post('', async (req, res) =>{
                 res.status(201).send('La provincia fue creada con exito');
             }
         }
-    } catch (error) {
-        
+    } catch (e) {
+        console.log(e);
     }
 });
 

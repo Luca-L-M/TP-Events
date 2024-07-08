@@ -2,9 +2,9 @@ import DataBaseHelper from "../helpers/db-helper";
 
 export default class Event_enrollmentRepository
 {
-   //Listar Enrollment Endpoint:
-   getAllAsync = async (id_event, filtro) =>
-   {
+    //Listar Enrollment Endpoint:
+    getAllAsync = async (id_event, filtro) =>
+    {
         let returnArray = null;
         let sql = `
         SELECT
@@ -44,5 +44,22 @@ export default class Event_enrollmentRepository
 
         returnArray = DataBaseHelper.requestValues(sql, values);
         return returnArray;
-   }
+    }
+
+    //Buscar enrollment en un evento
+    getAllByIdAsync = async (id) =>
+    {
+        let returnArray = null;
+        const sql = `
+        SELECT
+            ER.*
+        FROM
+            event_enrollment As ER inner join events As E on E.id = ER.id_event
+        where
+            E.id_event = $1`;
+        const values = [id];
+
+        returnArray = DataBaseHelper.requestValues(sql, values);
+        return returnArray;
+    }
 }

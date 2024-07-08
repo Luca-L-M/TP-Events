@@ -57,9 +57,9 @@ router.post('', async (req, res) =>{
             {
                 return res.status(400).send('El name o description están vacíos o tienen menos de tres (3) letras');
             }
-            else if (!(entity.max_assistance > max_capcity))
+            else if (entity.max_assistance > max_capcity)
             {
-                return res.status(400).send('El max_assistance es mayor que el max_capacity del  id_event_location');
+                return res.status(400).send('El max_assistance es mayor que el max_capacity del id_event_location');
             }
             else if (!(ValidationHelper.validarInt(entity.price) && ValidationHelper.validarInt(entity.duration_in_minutes)))
             {
@@ -67,16 +67,70 @@ router.post('', async (req, res) =>{
             }
             else
             {
-                const returnArray = await svc.createEventAsync(entity);
+                const returnArray = await svc.createAsync(entity);
                 return res.status(201).json(returnArray);
             }
         }
         else respuesta = res.status(401).send('Unauthorized');
-    } catch (error) {
-        return res.status(400).send('Bad interno');
+    } catch (e) {
+        console.log(e);
     }
-    
-    return respuesta;
+});
+
+//Modificar evento
+router.put('', async (req, res) =>{
+    try {
+        if (AutheticationHelper.authenticationToken(req.token))
+        {
+            const entity = req.body;
+            const max_capcity = await svc.getMaxCapacity(entity.id_location);
+            if (!(ValidationHelper.validarString(entity.name) || ValidationHelper.validarString(entity.descripcion)))
+            {
+                return res.status(400).send('El name o description están vacíos o tienen menos de tres (3) letras');
+            }
+            else if (entity.max_assistance > max_capcity)
+            {
+                return res.status(400).send('El max_assistance es mayor que el max_capacity del id_event_location');
+            }
+            else if (!(ValidationHelper.validarInt(entity.price) && ValidationHelper.validarInt(entity.duration_in_minutes)))
+            {
+                return res.status(400).send('El price o duration_in_minutes son menores que cero');
+            }
+            else
+            {
+                const returnArray = await svc.updateAsync(entity);
+                if (returnArray == null) return res.status(404).send('Not found');
+                else return res.status(200).json(returnArray);
+            }
+        }
+        else respuesta = res.status(401).send('Unauthorized');
+    } catch (e) {
+        console.log(e);
+    }
+});
+
+//eliminar un evento
+router.delete('/:id', async (req, res) =>{
+    try {
+        if (AutheticationHelper.authenticationToken(req.token))
+        {
+            const id = req.params.id;
+            const enrollment = await Event_enrollmentServices.getMaxCapacity(id);
+            if (enrollment == null)
+            {
+                return res.status(400).send('Bad request');
+            }
+            else
+            {
+                const returnArray = await svc.deleteByIdAsync(id);
+                if (returnArray == null) return res.status(404).send('Not found');
+                else return res.status(200).json(returnArray);
+            }
+        }
+        else respuesta = res.status(401).send('Unauthorized');
+    } catch (e) {
+        console.log(e);
+    }
 });
 
 //Inscribirse a un evento
