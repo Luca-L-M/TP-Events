@@ -16,6 +16,13 @@ export default class ProvinceServices
         return returnArray;
     }
 
+    getLocationByIdAsync = async (id) =>
+    {
+        const repo = new ProvinceRepository();
+        const returnArray = await repo.getLocationByIdAsync(id);
+        return returnArray;
+    }
+
     createAsync = async (entity) =>
     {
         const repo = new ProvinceRepository();

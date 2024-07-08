@@ -11,6 +11,7 @@ export default class ProvinceRepository
         return returnArray;
     }
 
+    //Busca provincia por ID
     getByIdAsync = async (id) =>
     {
         let returnArray = null;
@@ -20,6 +21,17 @@ export default class ProvinceRepository
         return returnArray;
     }
 
+    //Lisata locaciones en una provincia
+    getLocationByIdAsync = async (id) =>
+    {
+        let returnArray = null;
+        const sql = `SELECT L.* FROM provinces As P inner join locations As L On P.id = L.id_province where P.id = $1`;
+        const values = [id];
+        returnArray = DataBaseHelper.requestValues(sql, values);
+        return returnArray;
+    }
+
+    //Crea una provincia
     createAsync = async (entity) =>
     {
         let returnArray = null;
