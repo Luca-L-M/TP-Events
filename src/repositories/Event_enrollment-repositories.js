@@ -62,4 +62,59 @@ export default class Event_enrollmentRepository
         returnArray = DataBaseHelper.requestValues(sql, values);
         return returnArray;
     }
+
+    //Buscar un enrollment especifico
+    getEnrollmentAsync = async (id_event, id_user) =>
+    {
+        let returnArray = null;
+        const sql = `
+        SELECT
+            *
+        FROM
+            event_enrollment
+        where
+            id_event = $1 and id_user = $2`;
+        const values = [id_event, id_user];
+
+        returnArray = DataBaseHelper.requestOne(sql, values);
+        return returnArray;
+    }
+
+    //Devolver asistencias
+    getAssistanceAsync = async (id) =>
+    {
+        let returnArray = null;
+        let sql = `
+        SELECT Distinct 
+            *
+        FROM 
+            event_enrollment
+        WHERE 
+            id_event = $1`;
+        const values = [id];
+        returnArray = DataBaseHelper.requestCount(sql, values);
+        return returnArray;
+    }
+
+    //Crear evento
+    createAsync = async (entity) =>
+    {
+        let returnArray = null;
+        const sql = `
+        Insert into event_enrollment(id_event, id_user, description, registration_date_time, attended, observations, rating)
+        Values ($1,$2,$3,$4,$5,$6,$7)`;
+        const values = [entity.id_event, entity.id_user, entity.description, Date.now(), entity.attended, entity.observation, entity.rating]
+        returnArray = DataBaseHelper.requestCount(sql, values);
+        return returnArray;
+    }
+
+    //eliminar enrollment
+    deleteByIdAsync = async (id) =>
+    {
+        let returnArray = null;
+        const sql = `Delete FROM event_enrollment where id = $1`;
+        const values = [id]
+        returnArray = DataBaseHelper.requestCount(sql, values);
+        return returnArray;
+    }
 }

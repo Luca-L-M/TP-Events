@@ -83,7 +83,7 @@ router.put('', async (req, res) =>{
         if (AutheticationHelper.authenticationToken(req.token))
         {
             const entity = req.body;
-            const max_capcity = await svc.getMaxCapacity(entity.id_location);
+            const max_capcity = await svc.getMaxCapacityAsync(entity.id_location);
             if (!(ValidationHelper.validarString(entity.name) || ValidationHelper.validarString(entity.descripcion)))
             {
                 return res.status(400).send('El name o description están vacíos o tienen menos de tres (3) letras');
@@ -115,8 +115,8 @@ router.delete('/:id', async (req, res) =>{
         if (AutheticationHelper.authenticationToken(req.token))
         {
             const id = req.params.id;
-            const enrollment = await Event_enrollmentServices.getMaxCapacity(id);
-            if (enrollment == null)
+            const assistance = await Event_enrollmentServices.getAssistanceAsync(id);
+            if (assistance == null)
             {
                 return res.status(400).send('Bad request');
             }
@@ -135,18 +135,99 @@ router.delete('/:id', async (req, res) =>{
 
 //Inscribirse a un evento
 router.post('/:id/enrollment', async (req, res) =>{
-    if (AutheticationHelper.authenticationToken(req.token))
-    {
-        let respuesta;
-        const {id_event} = req.params.id;
-        const returnArray = await Event_enrollmentServices.getAllAsync(id_event, filtro);
-        if (returnArray != null)
+    try {
+        if (AutheticationHelper.authenticationToken(req.token))
         {
-            respuesta = res.status(201).json(returnArray);
+            const entity = req.body;
+            const Evento = await svc.getDetailsEventAsync(entity.id_event);
+            const existe = await Event_enrollmentServices.getEnrollmentAsync(entity.id_event, entity.id_user);
+            const today = Date.now();
+            const assistance = await Event_enrollmentServices.getAssistanceAsync(entity.id_evento);
+            if (assistance + 1 > Evento.max_assistance)
+            {
+                return res.status(400).send('Exceda la capacidad máxima de registrados (max_assistance) al evento.');
+            }
+            else if (Evento.start_date > today)
+            {
+                return res.status(400).send('El evento ya empezo o ya termino');
+            }
+            else if (!Evento.enable_for_enrollment)
+            {
+                return res.status(400).send('El evento no esta habilitado para la inscripcion');
+            }
+            else if (existe != null)
+            {
+                return res.status(400).send('El usuario ya esta inscrito');
+            }
+            else
+            {
+                const returnArray = await Event_enrollmentServices.createAsync(entity);
+                if (returnArray == null) return res.status(404).send('Not found');
+                else return res.status(201).json(returnArray);                return res.status(201).json(returnArray);
+            }
         }
-        else respuesta = res.status(400).send('Bad request')
+        else respuesta = res.status(401).send('Unauthorized');
+    } catch (e) {
+        console.log(e);
     }
-    return respuesta;
+});
+
+//eliminar un enrollment
+router.delete('/:id/enrollment', async (req, res) =>{
+    try {
+        if (AutheticationHelper.authenticationToken(req.token))
+        {
+            const id = req.params.id;
+            const Evento = await svc.getDetailsEventAsync(id);
+            const existe = await Event_enrollmentServices.getEnrollmentAsync(entity.id_event, entity.id_user);
+            if (existe == null)
+            {
+                return res.status(400).send('El usuario no esta inscrito a este evento');
+            }
+            else if (Evento.start_date > today)
+            {
+                return res.status(400).send('El evento ya empezo o ya termino');
+            }
+            else
+            {
+                const returnArray = await Event_enrollmentServices.deleteByIdAsync(id);
+                if (returnArray == null) return res.status(404).send('Not found');
+                else return res.status(200).json(returnArray);
+            }
+        }
+        else respuesta = res.status(401).send('Unauthorized');
+    } catch (e) {
+        console.log(e);
+    }
+});
+
+//rating HACER (QUE MIERDA ES UN PATCH?)
+router.patch('/:id/enrollment/:entero', async (req, res) =>{
+    try {
+        if (AutheticationHelper.authenticationToken(req.token))
+        {
+            const id = req.params.id;
+            const Evento = await svc.getDetailsEventAsync(id);
+            const existe = await Event_enrollmentServices.getEnrollmentAsync(entity.id_event, entity.id_user);
+            if (existe == null)
+            {
+                return res.status(400).send('El usuario no esta inscrito a este evento');
+            }
+            else if (Evento.start_date > today)
+            {
+                return res.status(400).send('El evento ya empezo o ya termino');
+            }
+            else
+            {
+                const returnArray = await Event_enrollmentServices.deleteByIdAsync(id);
+                if (returnArray == null) return res.status(404).send('Not found');
+                else return res.status(200).json(returnArray);
+            }
+        }
+        else respuesta = res.status(401).send('Unauthorized');
+    } catch (e) {
+        console.log(e);
+    }
 });
 
 export default router;

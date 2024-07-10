@@ -16,5 +16,10 @@ export default class LocationsServices
         return returnArray;
     }
 
- 
+    getEventLocationsByIdAsync = async (id) =>
+    {
+        const repo = new LocationsRepository();
+        const returnArray = await repo.getEventLocationsByIdAsync(id);
+        return returnArray;
+    }
 }

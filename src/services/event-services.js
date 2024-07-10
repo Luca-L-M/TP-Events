@@ -26,6 +26,14 @@ export default class EventServices
         return returnArray;
     }
 
+    //Devolver max_assistance
+    getMaxAssistanceAsync = async (id) =>
+    {
+        const repo = new EventRepository();
+        const returnArray = await repo.getMaxAssistanceAsync(id);
+        return returnArray;
+    }
+
     //Crear evento
     createAsync = async (entity) =>
     {
@@ -39,6 +47,14 @@ export default class EventServices
     {
         const repo = new EventRepository();
         const returnArray = await repo.updateAsync(entity);
+        return returnArray;
+    }
+
+    //eliminar evento
+    deleteByIdAsync = async (id) =>
+    {
+        const repo = new EventRepository();
+        const returnArray = await repo.deleteByIdAsync(id);
         return returnArray;
     }
 }

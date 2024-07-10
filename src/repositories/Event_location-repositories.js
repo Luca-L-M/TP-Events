@@ -23,7 +23,7 @@ export default class Event_locationRepository
         return returnArray;
     }
 
-    getByIdAsync = async (id) =>
+    getByIdAsync = async (id_location) =>
     {
         let returnArray = null;
         const client = new Client(DBConfig);

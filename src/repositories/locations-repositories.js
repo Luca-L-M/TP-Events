@@ -1,19 +1,14 @@
-import DBConfig from '../configs/dbConfig.js';
-import pkg from 'pg';
-const {Client, Pool} = pkg;
+import DataBaseHelper from "../helpers/db-helper";
 
 export default class LocationsRepository
 {
     getAllAsync = async () =>
     {
-        let returnArray = null;
-        const client = new Client(DBConfig);
+
         try
         {
-            await client.connect();
             const sql = 'SELECT * FROM locations';
-            const result = await client.query(sql);
-            await client.end();
+            const result = await DataBaseHelper.requestAll(sql);
             returnArray = result.rows;
         }
         catch (error)
@@ -25,14 +20,10 @@ export default class LocationsRepository
 
     getByIdAsync = async (id) =>
     {
-        let returnArray = null;
-        const client = new Client(DBConfig);
         try
         {
-            await client.connect();
             const sql = `SELECT * FROM locations where id = ${id}`;
-            const result = await client.query(sql);
-            await client.end();
+            const result = await DataBaseHelper.requestValues(sql);
             returnArray = result.rows;
         }
         catch (error)
