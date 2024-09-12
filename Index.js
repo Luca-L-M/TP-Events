@@ -6,7 +6,7 @@ import UserRouter from"./src/controllers/users-controller.js";
 
 
 const app=express();
-const port=3000; //El puerto 3000 (http://localhost:3000)
+const port=4000; //El puerto 3000 (http://localhost:3000)
 
 //Agrego los Middlewares
 app.use(cors()); //Middleware de CORS.

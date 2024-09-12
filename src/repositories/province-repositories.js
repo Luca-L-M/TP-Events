@@ -1,4 +1,4 @@
-import DataBaseHelper from "../helpers/db-helper";
+import DataBaseHelper from "../helpers/db-helper.js";
 
 export default class ProvinceRepository
 {
