@@ -1,4 +1,5 @@
 import DataBaseHelper from '../helpers/db-helper.js';
+const DBHelper = new DataBaseHelper;
 import jwt from 'jsonwebtoken';
 
 export default class UsersRepository
@@ -20,7 +21,7 @@ export default class UsersRepository
             };
             const sql = `select * From users Where username= $1 And password= $2`;
             const values = [entity.username, entity.password];
-            const consulta = DataBaseHelper.requestValues(sql, values);
+            const consulta = DBHelper.requestValues(sql, values);
             if(consulta != null)
             {
                 const token = jwt.sign(login, KEY, options);
@@ -45,7 +46,7 @@ export default class UsersRepository
         let returnArray = null;
         const sql = `Insert into Users(first_name, last_name, username, password) Values ($1,$2,$3,$4)`;
         const values = [entity.first_name, entity.last_name, entity.username, entity.password];
-        returnArray = DataBaseHelper.requestCount(sql, values);
+        returnArray = DBHelper.requestCount(sql, values);
         return returnArray;
     }
 }

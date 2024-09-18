@@ -1,103 +1,56 @@
 import DBConfig from '../configs/dbConfig.js';
+const DBHelper = new DataBaseHelper;
 import pkg from 'pg';
 const {Client, Pool} = pkg;
 
 export default class Event_tagsRepository
 {
+    //Listar event_tags
     getAllAsync = async () =>
     {
         let returnArray = null;
-        const client = new Client(DBConfig);
-        try
-        {
-            await client.connect();
-            const sql = 'SELECT * FROM event_tags';
-            const result = await client.query(sql);
-            await client.end();
-            returnArray = result.rows;
-        }
-        catch (error)
-        {
-            console.log(error);
-        }
+        const sql = "SELECT * FROM event_tags";
+        returnArray = DBHelper.requestAll(sql);
         return returnArray;
     }
 
+    //Busca event_tag por ID
     getByIdAsync = async (id) =>
     {
         let returnArray = null;
-        const client = new Client(DBConfig);
-        try
-        {
-            await client.connect();
-            const sql = `SELECT * FROM event_tags where id = ${id}`;
-            const result = await client.query(sql);
-            await client.end();
-            returnArray = result.rows;
-        }
-        catch (error)
-        {
-            console.log(error);
-        }
+        const sql = `SELECT * FROM event_tags where id = $1`;
+        const values = [id];
+        returnArray = DBHelper.requestValues(sql, values);
         return returnArray;
     }
 
+    //Crea una event_tag
     createAsync = async (entity) =>
     {
         let returnArray = null;
-        const client = new Client(DBConfig);
-        try
-        {
-            await client.connect();
-            const sql = `Insert into event_tags(id_event, id_tag) Values ($1,$2)`;
-            let values = [entity.id_event, entity.id_tag]
-            const result = await client.query(sql, values);
-            await client.end();
-            returnArray = result.rows;
-        }
-        catch (error)
-        {
-            console.log(error);
-        }
+        const sql = `Insert into tags(id_event, id_tag) Values ($1)`;
+        const values = [entity.id_event, entity.id_tag]
+        returnArray = DBHelper.requestCount(sql, values);
         return returnArray;
     }
-
+    
+    //Actualiza una event_tag
     updateAsync = async (entity) =>
     {
         let returnArray = null;
-        const client = new Client(DBConfig);
-        try
-        {
-            await client.connect();
-            const sql = `Update event_tags Set id_event= $1, id_tag= $2 Where id= $3`;
-            let values = [entity.id_event, entity.id_tag, entity.id]
-            const result = await client.query(sql, values);
-            await client.end();
-            returnArray = result.rows;
-        }
-        catch (error)
-        {
-            console.log(error);
-        }
+        const sql = `Update event_tags Set id_event= $1, id_tag= $2 Where id= $3`;
+        const values = [entity.id_event, entity.id_tag, entity.id]
+        returnArray = DBHelper.requestCount(sql, values);
         return returnArray;
     }
 
+    //Borra una tag
     deleteByIdAsync = async (id) =>
     {
         let returnArray = null;
-        const client = new Client(DBConfig);
-        try
-        {
-            await client.connect();
-            const sql = `Delete FROM event_tags where id = ${id}`;
-            const result = await client.query(sql);
-            await client.end();
-            returnArray = result.rows;
-        }
-        catch (error)
-        {
-            console.log(error);
-        }
+        const sql = `Delete FROM event_tags where id = $1`;
+        const values = [id]
+        returnArray = DBHelper.requestCount(sql, values);
         return returnArray;
     }
 }

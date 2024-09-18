@@ -10,8 +10,10 @@ export default class ValidationHelper
     }
 
     //validar Mail
-    validarMail = (data) => {
-        if(data)
+    validarMail = (data) =>
+    {
+        const mail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!mail.test(data))
         {
             return true;
         }

@@ -1,4 +1,5 @@
 import DataBaseHelper from "../helpers/db-helper.js";
+const DBHelper = new DataBaseHelper;
 
 export default class EventRepository
 {
@@ -45,7 +46,7 @@ export default class EventRepository
         }
         sql += ` Group by E.id, U.id, C.id, El.id`
 
-        returnArray = DataBaseHelper.requestValues(sql,values);
+        returnArray = DBHelper.requestValues(sql,values);
         return returnArray;
     }
 
@@ -81,7 +82,7 @@ export default class EventRepository
         Group by
             E.id, El.id, U.id, T.id, C.id`;
         const values = [id];
-        returnArray = DataBaseHelper.requestOne(sql, values);
+        returnArray = DBHelper.requestOne(sql, values);
         return returnArray;
     }
 
@@ -98,7 +99,7 @@ export default class EventRepository
         WHERE 
             E.id = $1`;
         const values = [id];
-        returnArray = DataBaseHelper.requestOne(sql, values);
+        returnArray = DBHelper.requestOne(sql, values);
         return returnArray;
     }
 
@@ -114,7 +115,7 @@ export default class EventRepository
         WHERE 
             id = $1`;
         const values = [id];
-        returnArray = DataBaseHelper.requestOne(sql, values);
+        returnArray = DBHelper.requestOne(sql, values);
         return returnArray;
     }
 
@@ -126,7 +127,7 @@ export default class EventRepository
         Insert into events(name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user)
         Values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`;
         const values = [entity.name, entity.description, entity.id_event_category, entity.id_event_location, entity.start_date, entity.duration_in_minutes, entity.price, entity.enabled_for_enrollment, entity.max_assistance, entity.id_creator_user]
-        returnArray = DataBaseHelper.requestCount(sql, values);
+        returnArray = DBHelper.requestCount(sql, values);
         return returnArray;
     }
 
@@ -138,7 +139,7 @@ export default class EventRepository
         Update evento Set name=$2, description=$3, id_event_category=$4, id_event_location=$5, start_date=$6, duration_in_minutes=$7, price=$8, enabled_for_enrollment=$9, max_assistance=$10, id_creator_user=$11
         Where id = $1`;
         const values = [entity.id, entity.name, entity.description, entity.id_event_category, entity.id_event_location, entity.start_date, entity.duration_in_minutes, entity.price, entity.enabled_for_enrollment, entity.max_assistance, entity.id_creator_user]
-        returnArray = DataBaseHelper.requestCount(sql, values);
+        returnArray = DBHelper.requestCount(sql, values);
         return returnArray;
     }
 
@@ -148,7 +149,7 @@ export default class EventRepository
         let returnArray = null;
         const sql = `Delete FROM events where id = $1`;
         const values = [id]
-        returnArray = DataBaseHelper.requestCount(sql, values);
+        returnArray = DBHelper.requestCount(sql, values);
         return returnArray;
     }
 }

@@ -1,35 +1,24 @@
 import DataBaseHelper from "../helpers/db-helper";
+const DBHelper = new DataBaseHelper;
 
 export default class LocationsRepository
 {
+    //Listar locations
     getAllAsync = async () =>
     {
-
-        try
-        {
-            const sql = 'SELECT * FROM locations';
-            const result = await DataBaseHelper.requestAll(sql);
-            returnArray = result.rows;
-        }
-        catch (error)
-        {
-            console.log(error);
-        }
+        let returnArray = null;
+        const sql = "SELECT * FROM locations";
+        returnArray = DBHelper.requestAll(sql);
         return returnArray;
     }
 
+    //Busca location por ID
     getByIdAsync = async (id) =>
     {
-        try
-        {
-            const sql = `SELECT * FROM locations where id = ${id}`;
-            const result = await DataBaseHelper.requestValues(sql);
-            returnArray = result.rows;
-        }
-        catch (error)
-        {
-            console.log(error);
-        }
+        let returnArray = null;
+        const sql = `SELECT * FROM locations where id = $1`;
+        const values = [id];
+        returnArray = DBHelper.requestValues(sql, values);
         return returnArray;
     }
 }
