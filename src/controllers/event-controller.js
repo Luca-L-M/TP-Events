@@ -2,7 +2,9 @@ import {Router} from 'express';
 import EventServices from '../services/event-services.js';
 import Event_enrollmentServices from '../services/event_enrollment-services.js';
 import ValidationHelper from '../helpers/validation-helper.js';
+const VHelper = new ValidationHelper;
 import AutheticationHelper from '../helpers/authetication-helper.js';
+const AuthHelper = new AutheticationHelper;
 const router = Router();
 const svc = new EventServices();
 
@@ -49,11 +51,11 @@ router.get('/:id/enrollment', async (req, res) =>{
 //Crear evento
 router.post('', async (req, res) =>{
     try {
-        if (AutheticationHelper.authenticationToken(req.token))
+        if (AuthHelper.authenticationToken(req.token))
         {
             const entity = req.body;
             const max_capcity = await svc.getMaxCapacity(entity.id_location);
-            if (!(ValidationHelper.validarString(entity.name) || ValidationHelper.validarString(entity.descripcion)))
+            if (!(VHelper.validarString(entity.name) || VHelper.validarString(entity.descripcion)))
             {
                 return res.status(400).send('El name o description están vacíos o tienen menos de tres (3) letras');
             }
@@ -61,7 +63,7 @@ router.post('', async (req, res) =>{
             {
                 return res.status(400).send('El max_assistance es mayor que el max_capacity del id_event_location');
             }
-            else if (!(ValidationHelper.validarInt(entity.price) && ValidationHelper.validarInt(entity.duration_in_minutes)))
+            else if (!(VHelper.validarInt(entity.price) && VHelper.validarInt(entity.duration_in_minutes)))
             {
                 return res.status(400).send('El price o duration_in_minutes son menores que cero');
             }
@@ -80,11 +82,11 @@ router.post('', async (req, res) =>{
 //Modificar evento
 router.put('', async (req, res) =>{
     try {
-        if (AutheticationHelper.authenticationToken(req.token))
+        if (AuthHelper.authenticationToken(req.token))
         {
             const entity = req.body;
             const max_capcity = await svc.getMaxCapacityAsync(entity.id_location);
-            if (!(ValidationHelper.validarString(entity.name) || ValidationHelper.validarString(entity.descripcion)))
+            if (!(VHelper.validarString(entity.name) || VHelper.validarString(entity.descripcion)))
             {
                 return res.status(400).send('El name o description están vacíos o tienen menos de tres (3) letras');
             }
@@ -92,7 +94,7 @@ router.put('', async (req, res) =>{
             {
                 return res.status(400).send('El max_assistance es mayor que el max_capacity del id_event_location');
             }
-            else if (!(ValidationHelper.validarInt(entity.price) && ValidationHelper.validarInt(entity.duration_in_minutes)))
+            else if (!(VHelper.validarInt(entity.price) && VHelper.validarInt(entity.duration_in_minutes)))
             {
                 return res.status(400).send('El price o duration_in_minutes son menores que cero');
             }
@@ -112,7 +114,7 @@ router.put('', async (req, res) =>{
 //eliminar un evento
 router.delete('/:id', async (req, res) =>{
     try {
-        if (AutheticationHelper.authenticationToken(req.token))
+        if (AuthHelper.authenticationToken(req.token))
         {
             const id = req.params.id;
             const assistance = await Event_enrollmentServices.getAssistanceAsync(id);
@@ -136,7 +138,7 @@ router.delete('/:id', async (req, res) =>{
 //Inscribirse a un evento
 router.post('/:id/enrollment', async (req, res) =>{
     try {
-        if (AutheticationHelper.authenticationToken(req.token))
+        if (AuthHelper.authenticationToken(req.token))
         {
             const entity = req.body;
             const Evento = await svc.getDetailsEventAsync(entity.id_event);
@@ -175,7 +177,7 @@ router.post('/:id/enrollment', async (req, res) =>{
 //eliminar un enrollment
 router.delete('/:id/enrollment', async (req, res) =>{
     try {
-        if (AutheticationHelper.authenticationToken(req.token))
+        if (AuthHelper.authenticationToken(req.token))
         {
             const id = req.params.id;
             const Evento = await svc.getDetailsEventAsync(id);
@@ -204,7 +206,7 @@ router.delete('/:id/enrollment', async (req, res) =>{
 //rating HACER (QUE MIERDA ES UN PATCH?)
 router.patch('/:id/enrollment/:entero', async (req, res) =>{
     try {
-        if (AutheticationHelper.authenticationToken(req.token))
+        if (AuthHelper.authenticationToken(req.token))
         {
             const id = req.params.id;
             const Evento = await svc.getDetailsEventAsync(id);

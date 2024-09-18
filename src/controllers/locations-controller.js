@@ -1,8 +1,8 @@
 import {Router} from 'express';
 import LocationServices from '../services/location-services.js';
 import Event_locationRepository from '../repositories/Event_location-repositories.js';
-import ValidationHelper from '../helpers/validation-helper.js';
 import AutheticationHelper from '../helpers/authetication-helper.js';
+const AuthHelper = new AutheticationHelper;
 const router = Router();
 const svc = new LocationServices();
 
@@ -33,7 +33,7 @@ router.get('/:id', async (req, res) =>{
 
 router.get('/:id/event-location', async (req, res) =>{
     try {
-        if (AutheticationHelper.authenticationToken(req.token))
+        if (AuthHelper.authenticationToken(req.token))
         {
             const id = req.params.id;
             const returnArray = await Event_locationRepository.getByIdAsync(id);

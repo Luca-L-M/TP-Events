@@ -1,6 +1,7 @@
 import {Router} from 'express';
-import ProvinceServices from '../services/province-services.js'
-import ValidationHelper from '../helpers/validation-helper.js'
+import ProvinceServices from '../services/province-services.js';
+import ValidationHelper from '../helpers/validation-helper.js';
+const VHelper = new ValidationHelper;
 const router = Router();
 const svc = new ProvinceServices();
 
@@ -45,11 +46,11 @@ router.get('/:id/location', async (req, res) =>{
 router.post('', async (req, res) =>{
     try {
         const entity = req.body;
-        if (!(ValidationHelper.validarString(entity.name)))
+        if (!(VHelper.validarString(entity.name)))
         {
             res.status(400).send('El campo name está vacío o tiene menos de tres (3) letras');
         }
-        else if (!(ValidationHelper.validarInt(entity.latitude) && ValidationHelper.validarInt(entity.longitude)))
+        else if (!(VHelper.validarInt(entity.latitude) && VHelper.validarInt(entity.longitude)))
         {
             res.status(400).send('Los campos latitude y longitude no son números');
         }
@@ -69,7 +70,7 @@ router.post('', async (req, res) =>{
 router.put('', async (req, res) =>{
     let respuesta;
     let entity = req.body;
-    if (ValidationHelper.validarString(entity.name) &&  ValidationHelper.validarInt(entity.latitude) && ValidationHelper.validarInt(entity.longitude))
+    if (VHelper.validarString(entity.name) &&  VHelper.validarInt(entity.latitude) && VHelper.validarInt(entity.longitude))
     {
         respuesta = res.status(400).send('Bad request')
     }
