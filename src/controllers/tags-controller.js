@@ -33,7 +33,7 @@ router.post('', async (req, res) =>{
     console.log(returnArray);
     if (returnArray != null)
     {
-        respuesta = res.status(200).send('La provincia fue creada con exito');
+        respuesta = res.status(200).send('La tag fue creada con exito');
     }
     else respuesta = res.status(500).send('Error interno')
     return respuesta;
@@ -45,7 +45,7 @@ router.put('', async (req, res) =>{
     const returnArray = await svc.updateAsync(entity);
     if (returnArray != null)
     {
-        respuesta = res.status(200).send('La provincia fue modificada con exito');
+        respuesta = res.status(200).send('La tag fue modificada con exito');
     }
     else respuesta = res.status(500).send('Error interno')
     return respuesta;
