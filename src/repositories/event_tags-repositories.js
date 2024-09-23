@@ -1,4 +1,5 @@
 import DBConfig from '../configs/dbConfig.js';
+import DataBaseHelper from '../helpers/db-helper.js';
 const DBHelper = new DataBaseHelper;
 import pkg from 'pg';
 const {Client, Pool} = pkg;
