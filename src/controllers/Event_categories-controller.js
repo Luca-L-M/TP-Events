@@ -25,7 +25,7 @@ router.post('/:id', async (req, res) => {
     let createdEntity = false;
     try {
         const entity = req.body;
-        if (v.fullLetters(entity.name))
+        if (VHelper.fullLetters(entity.name))
         {
             createdEntity = await svc.createAsync(entity);
         }
