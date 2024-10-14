@@ -9,6 +9,12 @@ export default class ValidationHelper
         else return false;
     }
 
+    //validar string sin numeros
+    fullLetters(s) {
+        const regex = /^[a-zA-Z\s]+$/;;
+        return regex.test(s);
+    }
+
     //validar Mail
     validarMail = (data) =>
     {

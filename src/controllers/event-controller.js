@@ -3,13 +3,13 @@ import EventServices from '../services/event-services.js';
 import Event_enrollmentServices from '../services/event_enrollment-services.js';
 import ValidationHelper from '../helpers/validation-helper.js';
 const VHelper = new ValidationHelper;
-import AutheticationHelper from '../helpers/authetication-helper.js';
-const AuthHelper = new AutheticationHelper;
+import AuthMiddleware from '../middlewares/authenticationMiddleware.js';
+const Auth = new AuthMiddleware;
 const router = Router();
 const svc = new EventServices();
 
 //Listar eventos
-router.get('', async (req, res) =>{
+router.get('', Auth.AuthMiddleware, async (req, res) =>{
     let respuesta;
     const filtro = req.query;
     const returnArray = await svc.getAllAsync(filtro);

@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 
 export default class AutheticationHelper
 {
-    authenticationToken = async (token) => {
+    decryptToken = async (token) => {
         const KEY = 'claveToken';
         let Token = token;
         let payload = null;
