@@ -97,7 +97,7 @@ export default class Event_enrollmentRepository
         return returnArray;
     }
 
-    //Crear evento
+    //Crear enrollment
     createAsync = async (entity) =>
     {
         let returnArray = null;
@@ -105,6 +105,15 @@ export default class Event_enrollmentRepository
         Insert into event_enrollment(id_event, id_user, description, registration_date_time, attended, observations, rating)
         Values ($1,$2,$3,$4,$5,$6,$7)`;
         const values = [entity.id_event, entity.id_user, entity.description, Date.now(), entity.attended, entity.observation, entity.rating]
+        const assistances = getAssistanceAsync(entity.id_event);
+        if(assistances + 1 == Evento.max_assistance)
+        {
+            const sql2 = `
+            Update evento Set enabled_for_enrollment=$2
+            Where id = $1`;
+            const values2 = [entity.id_event, false]
+            const enrollment = DBHelper.requestCount(sql2, values2);
+        }
         returnArray = DBHelper.requestCount(sql, values);
         return returnArray;
     }

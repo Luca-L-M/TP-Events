@@ -10,7 +10,7 @@ export default class ValidationHelper
     }
 
     //validar string sin numeros
-    fullLetters(s) {
+    validarString(s) {
         const regex = /^[a-zA-Z\s]+$/;;
         return regex.test(s);
     }

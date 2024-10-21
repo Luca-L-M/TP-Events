@@ -141,10 +141,11 @@ router.post('/:id/enrollment', async (req, res) =>{
         if (AuthHelper.authenticationToken(req.token))
         {
             const entity = req.body;
-            const Evento = await svc.getDetailsEventAsync(entity.id_event);
-            const existe = await Event_enrollmentServices.getEnrollmentAsync(entity.id_event, entity.id_user);
+            const id_event = req.params.id;
+            const Evento = await svc.getDetailsEventAsync(id_event);
+            const existe = await Event_enrollmentServices.getEnrollmentAsync(id_event, entity.id_user);
             const today = Date.now();
-            const assistance = await Event_enrollmentServices.getAssistanceAsync(entity.id_evento);
+            const assistance = await Event_enrollmentServices.getAssistanceAsync(id_event);
             if (assistance + 1 > Evento.max_assistance)
             {
                 return res.status(400).send('Exceda la capacidad máxima de registrados (max_assistance) al evento.');
@@ -165,7 +166,7 @@ router.post('/:id/enrollment', async (req, res) =>{
             {
                 const returnArray = await Event_enrollmentServices.createAsync(entity);
                 if (returnArray == null) return res.status(404).send('Not found');
-                else return res.status(201).json(returnArray);                return res.status(201).json(returnArray);
+                else return res.status(201).json(returnArray);
             }
         }
         else respuesta = res.status(401).send('Unauthorized');

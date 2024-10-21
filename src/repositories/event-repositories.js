@@ -7,7 +7,7 @@ export default class EventRepository
     getAllAsync = async (filtro) =>
     {
         let returnArray = null;
-        let sql = `
+        const sql = `
         SELECT
             E.id, E.name, 
             E.description,
