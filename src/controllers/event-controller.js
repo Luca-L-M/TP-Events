@@ -3,22 +3,21 @@ import EventServices from '../services/event-services.js';
 import Event_enrollmentServices from '../services/event_enrollment-services.js';
 import ValidationHelper from '../helpers/validation-helper.js';
 const VHelper = new ValidationHelper;
-import AuthMiddleware from '../middlewares/authenticationMiddleware.js';
+import AuthMiddleware from '../middleware/authentication-middleware.js';
 const Auth = new AuthMiddleware;
 const router = Router();
 const svc = new EventServices();
 
 //Listar eventos
 router.get('', Auth.AuthMiddleware, async (req, res) =>{
-    let respuesta;
     const filtro = req.query;
+    console.log('events: ', filtro);
     const returnArray = await svc.getAllAsync(filtro);
     if (returnArray != null)
     {
-        respuesta = res.status(200).json(returnArray);
+        return res.status(200).json(returnArray);
     }
-    else respuesta = res.status(500).send('Error interno')
-    return respuesta;
+    else return res.status(500).send('Error interno')
 });
 
 //Detalle evento

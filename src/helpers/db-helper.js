@@ -20,6 +20,7 @@ export default class DataBaseHelper{
         }
         return data;
     }
+
     //devuelve las row counts
     requestCount = async (sql, values) => {
         let data = null;
@@ -28,7 +29,7 @@ export default class DataBaseHelper{
             await client.connect();
             const result = await client.query(sql, values);
             await client.end();
-            if (result.rows.length > 0){
+            if (result.rowCount > 0){
                 data = result.rowCount;
             }
         }
@@ -37,6 +38,7 @@ export default class DataBaseHelper{
         }
         return data;
     }
+
     //varios objetos
     requestValues = async (sql, values) => {
         let data = null;

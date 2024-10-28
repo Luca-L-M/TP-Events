@@ -21,13 +21,14 @@ export default class UsersRepository
             };
             const sql = `select * From users Where username= $1 And password= $2`;
             const values = [entity.username, entity.password];
-            const consulta = DBHelper.requestValues(sql, values);
-            if(consulta != null)
+            
+            const consulta = await DBHelper.requestOne(sql, values);
+            if(consulta && consulta.username === entity.username)
             {
                 const token = jwt.sign(login, KEY, options);
                 const result =
                 {
-                    succcess: true,
+                    success: true,
                     message: '',
                     token: token
                 }
@@ -43,10 +44,9 @@ export default class UsersRepository
 
     RegisterAsync = async (entity) =>
     {
-        let returnArray = null;
         const sql = `Insert into Users(first_name, last_name, username, password) Values ($1,$2,$3,$4)`;
         const values = [entity.first_name, entity.last_name, entity.username, entity.password];
-        returnArray = DBHelper.requestCount(sql, values);
+        const returnArray = DBHelper.requestCount(sql, values);
         return returnArray;
     }
 }

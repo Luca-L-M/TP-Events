@@ -1,7 +1,7 @@
 import {Router} from 'express';
 import ValidationHelper from '../helpers/validation-helper.js';
 const VHelper = new ValidationHelper;
-import AuthMiddleware from '../middlewares/authenticationMiddleware.js';
+import AuthMiddleware from '../middleware/authentication-middleware.js';
 const Auth = new AuthMiddleware;
 import Event_categoriesServices from '../services/event_categories-services.js';
 const router = Router();

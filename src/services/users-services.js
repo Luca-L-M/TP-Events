@@ -11,7 +11,7 @@ export default class UsersServices
     RegisterAsync = async (entity) =>
     {
         const repo = new UsersRepository();
-        const returnArray = await repo.LoginAsync(entity);
+        const returnArray = await repo.RegisterAsync(entity);
         return returnArray;
     }
 }
