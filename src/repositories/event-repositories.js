@@ -7,7 +7,7 @@ export default class EventRepository
     getAllAsync = async (filtro) =>
     {
         let returnArray = null;
-        const sql = `
+        let sql = `
         SELECT
             E.id, E.name, 
             E.description,
@@ -22,31 +22,31 @@ export default class EventRepository
         FROM
             events as E
             Inner Join users as U on E.id_creator_user = U.id
-            Left join event_categories As C on E.id_event_category = C.id
+            Inner join event_categories As C on E.id_event_category = C.id
             inner join event_locations As EL on E.id_event_location = EL.id
             Left join event_tags As ET on E.id = ET.id_event
-            inner join tags As T on ET.id_tag = T.id
+            Left join tags As T on ET.id_tag = T.id
         Where 1=1`;
         let values = [];
         if (filtro.hasOwnProperty("name")) {
-            sql += ` AND E.name = $${values.length + 1}`;
+            sql = `${sql} AND E.name = $${values.length + 1}`;
             values.push(filtro.name);
         }
         if (filtro.hasOwnProperty("category")) {
-            sql += ` AND C.name = $${values.length + 1}`;
+            sql = `${sql} AND C.name = $${values.length + 1}`;
             values.push(filtro.category);
         }
         if (filtro.hasOwnProperty("start_date")) {
-            sql += ` AND E.start_date = $${values.length + 1}`;
+            sql = `${sql} AND E.start_date > $${values.length + 1}::timestamp without time zone`;
             values.push(filtro.start_date);
         }
         if (filtro.hasOwnProperty("tag")) {
-            sql += ` AND T.name = $${values.length + 1}`;
+            sql = `${sql} AND T.name = $${values.length + 1}`;
             values.push(filtro.tag);
         }
-        sql += ` Group by E.id, U.id, C.id, El.id`
-
-        returnArray = DBHelper.requestValues(sql,values);
+        sql = `${sql} Group by E.id, U.id, C.id, El.id`
+        
+        returnArray = await DBHelper.requestValues(sql,values);
         return returnArray;
     }
 
