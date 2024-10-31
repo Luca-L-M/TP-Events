@@ -22,15 +22,14 @@ router.get('', Auth.AuthMiddleware, async (req, res) =>{
 
 //Detalle evento
 router.get('/:id', async (req, res) =>{
-    let respuesta;
     const id = req.params.id;
+    console.log('detallesEventos: ', id);
     const returnArray = await svc.getDetailsEventAsync(id);
     if (returnArray != null)
     {
-        respuesta = res.status(200).json(returnArray);
+        return res.status(200).json(returnArray);
     }
-    else respuesta = res.status(404).send('Not found')
-    return respuesta;
+    else return res.status(404).send('Not found')
 });
 
 //Listar participantes
