@@ -11,7 +11,6 @@ const svc = new EventServices();
 //Listar eventos
 router.get('', Auth.AuthMiddleware, async (req, res) =>{
     const filtro = req.query;
-    console.log('events: ', filtro);
     const returnArray = await svc.getAllAsync(filtro);
     if (returnArray != null)
     {
@@ -23,7 +22,6 @@ router.get('', Auth.AuthMiddleware, async (req, res) =>{
 //Detalle evento
 router.get('/:id', async (req, res) =>{
     const id = req.params.id;
-    console.log('detallesEventos: ', id);
     const returnArray = await svc.getDetailsEventAsync(id);
     if (returnArray != null)
     {
