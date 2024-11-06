@@ -4,16 +4,18 @@ const DBHelper = new DataBaseHelper;
 export default class Event_enrollmentRepository
 {
     //Listar Enrollment Endpoint:
-    getAllAsync = async (id_event, filtro) =>
+    getAllAsync = async (id_event, filtro = {}) =>
     {
+        console.log('enrollment getAllAsync: ', filtro);
         let returnArray = null;
         let sql = `
         SELECT
             json_build_object('id',E.id, 'id_event',E.id_event,
-            json_build_object('id',U.id, 'first_name',U.first_name, 'last_name',U.last_name, 'username',U.username, 'password','******') As user,
-            'description',E.description, 'registration_date_time',E.registration_date_time, 'attended',E.attended, 'observations',E.observations, 'rating',E.rating) As collection
+            json_build_object('id',U.id, 'first_name',U.first_name, 'last_name',U.last_name, 'username',U.username, 'password','******') AS User,
+            'description',E.description, 'registration_date_time',E.registration_date_time, 'attended',E.attended, 'observations',E.observations, 'rating',E.rating)) AS Collection
         FROM
-            event_enrollment As E inner join users As U on E.id_user = U.id
+            event_enrollment AS E
+            inner join users AS U on E.id_user = U.id
         where
             E.id_event = $1,`;
         let values = [id_event];
@@ -43,7 +45,7 @@ export default class Event_enrollmentRepository
             values.push(values.rating);
         }
 
-        returnArray = DBHelper.requestValues(sql, values);
+        returnArray = await DBHelper.requestValues(sql, values);
         return returnArray;
     }
 
