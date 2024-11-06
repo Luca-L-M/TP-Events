@@ -1,12 +1,13 @@
 import {Router} from 'express';
 import EventServices from '../services/event-services.js';
-import Event_enrollmentServices from '../services/event_enrollment-services.js';
+import EventEnrollmentServices from '../services/event_enrollment-services.js';
 import ValidationHelper from '../helpers/validation-helper.js';
 const VHelper = new ValidationHelper;
 import AuthMiddleware from '../middleware/authentication-middleware.js';
 const Auth = new AuthMiddleware;
 const router = Router();
 const svc = new EventServices();
+const enrollment = new EventEnrollmentServices();
 
 //Listar eventos
 router.get('', Auth.AuthMiddleware, async (req, res) =>{
@@ -35,7 +36,7 @@ router.get('/:id/enrollment', async (req, res) =>{
     let respuesta;
     const {id_event} = req.params.id;
     const {filtro} = req.query;
-    const returnArray = await Event_enrollmentServices.getAllAsync(id_event, filtro);
+    const returnArray = await enrollment.getAllAsync(id_event, filtro);
     if (returnArray != null)
     {
         respuesta = res.status(200).json(returnArray);
@@ -113,7 +114,7 @@ router.delete('/:id', async (req, res) =>{
         if (AuthHelper.authenticationToken(req.token))
         {
             const id = req.params.id;
-            const assistance = await Event_enrollmentServices.getAssistanceAsync(id);
+            const assistance = await enrollment.getAssistanceAsync(id);
             if (assistance == null)
             {
                 return res.status(400).send('Bad request');
@@ -139,9 +140,9 @@ router.post('/:id/enrollment', async (req, res) =>{
             const entity = req.body;
             const id_event = req.params.id;
             const Evento = await svc.getDetailsEventAsync(id_event);
-            const existe = await Event_enrollmentServices.getEnrollmentAsync(id_event, entity.id_user);
+            const existe = await enrollment.getEnrollmentAsync(id_event, entity.id_user);
             const today = Date.now();
-            const assistance = await Event_enrollmentServices.getAssistanceAsync(id_event);
+            const assistance = await enrollment.getAssistanceAsync(id_event);
             if (assistance + 1 > Evento.max_assistance)
             {
                 return res.status(400).send('Exceda la capacidad máxima de registrados (max_assistance) al evento.');
@@ -160,7 +161,7 @@ router.post('/:id/enrollment', async (req, res) =>{
             }
             else
             {
-                const returnArray = await Event_enrollmentServices.createAsync(entity);
+                const returnArray = await enrollment.createAsync(entity);
                 if (returnArray == null) return res.status(404).send('Not found');
                 else return res.status(201).json(returnArray);
             }
@@ -178,7 +179,7 @@ router.delete('/:id/enrollment', async (req, res) =>{
         {
             const id = req.params.id;
             const Evento = await svc.getDetailsEventAsync(id);
-            const existe = await Event_enrollmentServices.getEnrollmentAsync(entity.id_event, entity.id_user);
+            const existe = await enrollment.getEnrollmentAsync(entity.id_event, entity.id_user);
             if (existe == null)
             {
                 return res.status(400).send('El usuario no esta inscrito a este evento');
@@ -189,7 +190,7 @@ router.delete('/:id/enrollment', async (req, res) =>{
             }
             else
             {
-                const returnArray = await Event_enrollmentServices.deleteByIdAsync(id);
+                const returnArray = await enrollment.deleteByIdAsync(id);
                 if (returnArray == null) return res.status(404).send('Not found');
                 else return res.status(200).json(returnArray);
             }
@@ -207,7 +208,7 @@ router.patch('/:id/enrollment/:entero', async (req, res) =>{
         {
             const id = req.params.id;
             const Evento = await svc.getDetailsEventAsync(id);
-            const existe = await Event_enrollmentServices.getEnrollmentAsync(entity.id_event, entity.id_user);
+            const existe = await enrollment.getEnrollmentAsync(entity.id_event, entity.id_user);
             if (existe == null)
             {
                 return res.status(400).send('El usuario no esta inscrito a este evento');
@@ -218,7 +219,7 @@ router.patch('/:id/enrollment/:entero', async (req, res) =>{
             }
             else
             {
-                const returnArray = await Event_enrollmentServices.deleteByIdAsync(id);
+                const returnArray = await enrollment.deleteByIdAsync(id);
                 if (returnArray == null) return res.status(404).send('Not found');
                 else return res.status(200).json(returnArray);
             }

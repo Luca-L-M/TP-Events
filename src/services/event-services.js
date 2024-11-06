@@ -1,11 +1,11 @@
 import EventRepository from '../repositories/event-repositories.js';
+const repo = new EventRepository();
 
 export default class EventServices
 {
     //Listar eventos
     getAllAsync = async (filtro) =>
     {
-        const repo = new EventRepository();
         const returnArray = await repo.getAllAsync(filtro);
         return returnArray;
     }
@@ -13,7 +13,6 @@ export default class EventServices
     //Detalle evento
     getDetailsEventAsync = async (id) =>
     {
-        const repo = new EventRepository();
         const returnArray = await repo.getDetailsEventAsync(id);
         return returnArray;
     }
@@ -21,7 +20,6 @@ export default class EventServices
     //Devolver max_capacity
     getMaxCapacityAsync = async (id) =>
     {
-        const repo = new EventRepository();
         const returnArray = await repo.getMaxCapacityAsync(id);
         return returnArray;
     }
@@ -29,7 +27,6 @@ export default class EventServices
     //Devolver max_assistance
     getMaxAssistanceAsync = async (id) =>
     {
-        const repo = new EventRepository();
         const returnArray = await repo.getMaxAssistanceAsync(id);
         return returnArray;
     }
@@ -37,7 +34,6 @@ export default class EventServices
     //Crear evento
     createAsync = async (entity) =>
     {
-        const repo = new EventRepository();
         const returnArray = await repo.createAsync(entity);
         return returnArray;
     }
@@ -45,7 +41,6 @@ export default class EventServices
     //Modificar evento
     updateAsync = async (entity) =>
     {
-        const repo = new EventRepository();
         const returnArray = await repo.updateAsync(entity);
         return returnArray;
     }
@@ -53,7 +48,6 @@ export default class EventServices
     //eliminar evento
     deleteByIdAsync = async (id) =>
     {
-        const repo = new EventRepository();
         const returnArray = await repo.deleteByIdAsync(id);
         return returnArray;
     }

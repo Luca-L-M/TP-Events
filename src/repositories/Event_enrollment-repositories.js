@@ -19,27 +19,27 @@ export default class Event_enrollmentRepository
         let values = [id_event];
         if(filtro.hasOwnProperty("first_name"))
         {
-            sql += ` And U.first_name = $${values.length + 1}`;
+            sql = `${sql} And U.first_name = $${values.length + 1}`;
             values.push(filtro.first_name);
         }
         if(filtro.hasOwnProperty("last_name"))
         {
-            sql += ` And U.last_name = $${values.length + 1}`;
+            sql = `${sql} And U.last_name = $${values.length + 1}`;
             values.push(filtro.last_name);
         }
         if(filtro.hasOwnProperty("username"))
         {
-            sql += ` And U.username = $${values.length + 1}`;
+            sql = `${sql} And U.username = $${values.length + 1}`;
             values.push(values.username);
         }
         if(filtro.hasOwnProperty("attended"))
         {
-            sql += ` E.attended = $${values.length + 1}`;
+            sql = `${sql} E.attended = $${values.length + 1}`;
             values.push(values.attended);
         }
         if(filtro.hasOwnProperty("rating"))
         {
-            sql += ` E.rating = $${values.length + 1}`;
+            sql = `${sql} E.rating = $${values.length + 1}`;
             values.push(values.rating);
         }
 

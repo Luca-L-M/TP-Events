@@ -54,6 +54,7 @@ export default class UsersRepository
     {
         let returnArray = null;
         const Token = token;
+        const KEY = 'claveToken';
         try
         {
             returnArray = jwt.verify(Token, KEY);

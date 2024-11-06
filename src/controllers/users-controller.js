@@ -40,7 +40,7 @@ router.post('/register', async (req, res) =>{
 router.get('/verify/:token', async (req, res) =>{
     try {
         const token = req.params.token;
-        let returnArray;
+        let returnArray = null;
         if (token != null)
         {
             returnArray = await svc.VerificarUsuarioAsync(token);
