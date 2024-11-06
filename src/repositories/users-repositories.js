@@ -25,7 +25,7 @@ export default class UsersRepository
             const consulta = await DBHelper.requestOne(sql, values);
             if(consulta && consulta.username === entity.username)
             {
-                const token = jwt.sign(login, KEY, options);
+                const token = jwt.sign(consulta, KEY, options);
                 const result =
                 {
                     success: true,
@@ -47,6 +47,21 @@ export default class UsersRepository
         const sql = `Insert into Users(first_name, last_name, username, password) Values ($1,$2,$3,$4)`;
         const values = [entity.first_name, entity.last_name, entity.username, entity.password];
         const returnArray = DBHelper.requestCount(sql, values);
+        return returnArray;
+    }
+
+    VerificarUsuarioAsync = async (token) =>
+    {
+        let returnArray = null;
+        const Token = token;
+        try
+        {
+            returnArray = jwt.verify(Token, KEY);
+        }
+        catch (error)
+        {
+            console.log(error);
+        }
         return returnArray;
     }
 }

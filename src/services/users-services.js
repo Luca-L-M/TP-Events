@@ -14,4 +14,9 @@ export default class UsersServices
         const returnArray = await repo.RegisterAsync(entity);
         return returnArray;
     }
+    VerificarUsuarioAsync = async (token) =>
+    {
+        const returnArray = await repo.VerificarUsuarioAsync(token);
+        return returnArray;
+    }
 }

@@ -36,4 +36,20 @@ router.post('/register', async (req, res) =>{
     }
 });
 
+//Verifica el token y devuelve el usuario
+router.get('/verify/:token', async (req, res) =>{
+    try {
+        const token = req.params.token;
+        let returnArray;
+        if (token != null)
+        {
+            returnArray = await svc.VerificarUsuarioAsync(token);
+            if (returnArray != null)return res.status(201).json(returnArray);
+            else return res.status(400).send('Error interno');
+        }
+    } catch (e) {
+        console.log(e);
+    }
+});
+
 export default router;
