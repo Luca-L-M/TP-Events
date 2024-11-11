@@ -46,127 +46,110 @@ router.get('/:id/enrollment', async (req, res) =>{
 });
 
 //Crear evento
-router.post('', async (req, res) =>{
+router.post('', Auth.AuthMiddleware, async (req, res) =>{
     try {
-        if (AuthHelper.authenticationToken(req.token))
+        const entity = req.body;
+        const max_capcity = await svc.getMaxCapacity(entity.id_location);
+        if (!(VHelper.fullLetters(entity.name) || VHelper.validarString(entity.descripcion)))
         {
-            const entity = req.body;
-            const max_capcity = await svc.getMaxCapacity(entity.id_location);
-            if (!(VHelper.fullLetters(entity.name) || VHelper.validarString(entity.descripcion)))
-            {
-                return res.status(400).send('El name o description están vacíos o tienen menos de tres (3) letras');
-            }
-            else if (entity.max_assistance > max_capcity)
-            {
-                return res.status(400).send('El max_assistance es mayor que el max_capacity del id_event_location');
-            }
-            else if (!(VHelper.validarInt(entity.price) && VHelper.validarInt(entity.duration_in_minutes)))
-            {
-                return res.status(400).send('El price o duration_in_minutes son menores que cero');
-            }
-            else
-            {
-                const returnArray = await svc.createAsync(entity);
-                return res.status(201).json(returnArray);
-            }
+            return res.status(400).send('El name o description están vacíos o tienen menos de tres (3) letras');
         }
-        else respuesta = res.status(401).send('Unauthorized');
+        else if (entity.max_assistance > max_capcity)
+        {
+            return res.status(400).send('El max_assistance es mayor que el max_capacity del id_event_location');
+        }
+        else if (!(VHelper.validarInt(entity.price) && VHelper.validarInt(entity.duration_in_minutes)))
+        {
+            return res.status(400).send('El price o duration_in_minutes son menores que cero');
+        }
+        else
+        {
+            const returnArray = await svc.createAsync(entity);
+            return res.status(201).json(returnArray);
+        }
     } catch (e) {
         console.log(e);
     }
 });
 
 //Modificar evento
-router.put('', async (req, res) =>{
+router.put('', Auth.AuthMiddleware, async (req, res) =>{
     try {
-        if (AuthHelper.authenticationToken(req.token))
+        const entity = req.body;
+        const max_capcity = await svc.getMaxCapacityAsync(entity.id_location);
+        if (!(VHelper.validarString(entity.name) || VHelper.validarString(entity.descripcion)))
         {
-            const entity = req.body;
-            const max_capcity = await svc.getMaxCapacityAsync(entity.id_location);
-            if (!(VHelper.validarString(entity.name) || VHelper.validarString(entity.descripcion)))
-            {
-                return res.status(400).send('El name o description están vacíos o tienen menos de tres (3) letras');
-            }
-            else if (entity.max_assistance > max_capcity)
-            {
-                return res.status(400).send('El max_assistance es mayor que el max_capacity del id_event_location');
-            }
-            else if (!(VHelper.validarInt(entity.price) && VHelper.validarInt(entity.duration_in_minutes)))
-            {
-                return res.status(400).send('El price o duration_in_minutes son menores que cero');
-            }
-            else
-            {
-                const returnArray = await svc.updateAsync(entity);
-                if (returnArray == null) return res.status(404).send('Not found');
-                else return res.status(200).json(returnArray);
-            }
+            return res.status(400).send('El name o description están vacíos o tienen menos de tres (3) letras');
         }
-        else respuesta = res.status(401).send('Unauthorized');
+        else if (entity.max_assistance > max_capcity)
+        {
+            return res.status(400).send('El max_assistance es mayor que el max_capacity del id_event_location');
+        }
+        else if (!(VHelper.validarInt(entity.price) && VHelper.validarInt(entity.duration_in_minutes)))
+        {
+            return res.status(400).send('El price o duration_in_minutes son menores que cero');
+        }
+        else
+        {
+            const returnArray = await svc.updateAsync(entity);
+            if (returnArray == null) return res.status(404).send('Not found');
+            else return res.status(200).json(returnArray);
+        }
     } catch (e) {
         console.log(e);
     }
 });
 
 //eliminar un evento
-router.delete('/:id', async (req, res) =>{
+router.delete('/:id', Auth.AuthMiddleware, async (req, res) =>{
     try {
-        if (AuthHelper.authenticationToken(req.token))
+        const id = req.params.id;
+        const assistance = await enrollment.getAssistanceAsync(id);
+        if (assistance == null)
         {
-            const id = req.params.id;
-            const assistance = await enrollment.getAssistanceAsync(id);
-            if (assistance == null)
-            {
-                return res.status(400).send('Bad request');
-            }
-            else
-            {
-                const returnArray = await svc.deleteByIdAsync(id);
-                if (returnArray == null) return res.status(404).send('Not found');
-                else return res.status(200).json(returnArray);
-            }
+            return res.status(400).send('Bad request');
         }
-        else respuesta = res.status(401).send('Unauthorized');
+        else
+        {
+            const returnArray = await svc.deleteByIdAsync(id);
+            if (returnArray == null) return res.status(404).send('Not found');
+            else return res.status(200).json(returnArray);
+        }
     } catch (e) {
         console.log(e);
     }
 });
 
 //Inscribirse a un evento
-router.post('/:id/enrollment', async (req, res) =>{
+router.post('/:id/enrollment', Auth.AuthMiddleware, async (req, res) =>{
     try {
-        if (AuthHelper.authenticationToken(req.token))
+        const entity = req.body;
+        const id_event = req.params.id;
+        const Evento = await svc.getDetailsEventAsync(id_event);
+        const existe = await enrollment.getEnrollmentAsync(id_event, entity.id_user);
+        const today = new Date().toISOString().split('T')[0];
+        const assistance = await enrollment.getAssistanceAsync(id_event);
+        if (assistance + 1 > Evento.max_assistance)
         {
-            const entity = req.body;
-            const id_event = req.params.id;
-            const Evento = await svc.getDetailsEventAsync(id_event);
-            const existe = await enrollment.getEnrollmentAsync(id_event, entity.id_user);
-            const today = Date.now();
-            const assistance = await enrollment.getAssistanceAsync(id_event);
-            if (assistance + 1 > Evento.max_assistance)
-            {
-                return res.status(400).send('Exceda la capacidad máxima de registrados (max_assistance) al evento.');
-            }
-            else if (Evento.start_date > today)
-            {
-                return res.status(400).send('El evento ya empezo o ya termino');
-            }
-            else if (!Evento.enable_for_enrollment)
-            {
-                return res.status(400).send('El evento no esta habilitado para la inscripcion');
-            }
-            else if (existe != null)
-            {
-                return res.status(400).send('El usuario ya esta inscrito');
-            }
-            else
-            {
-                const returnArray = await enrollment.createAsync(entity);
-                if (returnArray == null) return res.status(404).send('Not found');
-                else return res.status(201).json(returnArray);
-            }
+            return res.status(400).send('Exceda la capacidad máxima de registrados (max_assistance) al evento.');
         }
-        else respuesta = res.status(401).send('Unauthorized');
+        else if (Evento.start_date > today)
+        {
+            return res.status(400).send('El evento ya empezo o ya termino');
+        }
+        else if (!Evento.enable_for_enrollment)
+        {
+            return res.status(400).send('El evento no esta habilitado para la inscripcion');
+        }
+        else if (existe) {
+            return res.status(400).send('El usuario ya está inscrito');
+        }
+        else
+        {
+            const returnArray = await enrollment.createAsync(entity);
+            if (returnArray == null) return res.status(404).send('Not found');
+            else return res.status(201).json(returnArray);
+        }
     } catch (e) {
         console.log(e);
     }

@@ -6,18 +6,25 @@ export default class Event_enrollmentRepository
     //Listar Enrollment Endpoint:
     getAllAsync = async (id_event, filtro = {}) =>
     {
-        console.log('enrollment getAllAsync: ', filtro);
         let returnArray = null;
         let sql = `
         SELECT
-            json_build_object('id',E.id, 'id_event',E.id_event,
-            json_build_object('id',U.id, 'first_name',U.first_name, 'last_name',U.last_name, 'username',U.username, 'password','******') AS User,
-            'description',E.description, 'registration_date_time',E.registration_date_time, 'attended',E.attended, 'observations',E.observations, 'rating',E.rating)) AS Collection
+            E.id AS id,
+            E.id_event AS id_event,
+            U.id AS user_id,
+            U.first_name AS first_name,
+            U.last_name AS last_name,
+            U.username AS username,
+            E.description AS description,
+            E.registration_date_time AS registration_date_time,
+            E.attended AS attended,
+            E.observations AS observations,
+            E.rating AS rating
         FROM
-            event_enrollment AS E
-            inner join users AS U on E.id_user = U.id
-        where
-            E.id_event = $1,`;
+            event_enrollments AS E
+            Inner Join users AS U on E.id_user = U.id
+        WHERE
+            E.id_event = $1`;
         let values = [id_event];
         if(filtro.hasOwnProperty("first_name"))
         {
@@ -32,17 +39,17 @@ export default class Event_enrollmentRepository
         if(filtro.hasOwnProperty("username"))
         {
             sql = `${sql} And U.username = $${values.length + 1}`;
-            values.push(values.username);
+            values.push(filtro.username);
         }
         if(filtro.hasOwnProperty("attended"))
         {
-            sql = `${sql} E.attended = $${values.length + 1}`;
-            values.push(values.attended);
+            sql = `${sql} And E.attended = $${values.length + 1}`;
+            values.push(filtro.attended);
         }
         if(filtro.hasOwnProperty("rating"))
         {
-            sql = `${sql} E.rating = $${values.length + 1}`;
-            values.push(values.rating);
+            sql = `${sql} And E.rating = $${values.length + 1}`;
+            values.push(filtro.rating);
         }
 
         returnArray = await DBHelper.requestValues(sql, values);
@@ -57,7 +64,7 @@ export default class Event_enrollmentRepository
         SELECT
             ER.*
         FROM
-            event_enrollment As ER inner join events As E on E.id = ER.id_event
+            event_enrollments As ER inner join events As E on E.id = ER.id_event
         where
             E.id_event = $1`;
         const values = [id];
@@ -74,7 +81,7 @@ export default class Event_enrollmentRepository
         SELECT
             *
         FROM
-            event_enrollment
+            event_enrollments
         where
             id_event = $1 and id_user = $2`;
         const values = [id_event, id_user];
@@ -91,7 +98,7 @@ export default class Event_enrollmentRepository
         SELECT Distinct 
             *
         FROM 
-            event_enrollment
+            event_enrollments
         WHERE 
             id_event = $1`;
         const values = [id];
@@ -102,16 +109,18 @@ export default class Event_enrollmentRepository
     //Crear enrollment
     createAsync = async (entity) =>
     {
+        console.log('inscipcion: ', entity);
         let returnArray = null;
+        const today = new Date().toISOString().split('T')[0];
         const sql = `
-        Insert into event_enrollment(id_event, id_user, description, registration_date_time, attended, observations, rating)
+        Insert into event_enrollments(id_event, id_user, description, registration_date_time, attended, observations, rating)
         Values ($1,$2,$3,$4,$5,$6,$7)`;
-        const values = [entity.id_event, entity.id_user, entity.description, Date.now(), entity.attended, entity.observation, entity.rating]
+        const values = [entity.id_event, entity.id_user, entity.description, today, entity.attended, entity.observation || null, entity.rating || null]
         const assistances = getAssistanceAsync(entity.id_event);
         if(assistances + 1 == Evento.max_assistance)
         {
             const sql2 = `
-            Update evento Set enabled_for_enrollment=$2
+            Update events Set enabled_for_enrollment=$2
             Where id = $1`;
             const values2 = [entity.id_event, false]
             const enrollment = DBHelper.requestCount(sql2, values2);
@@ -124,7 +133,7 @@ export default class Event_enrollmentRepository
     deleteByIdAsync = async (id) =>
     {
         let returnArray = null;
-        const sql = `Delete FROM event_enrollment where id = $1`;
+        const sql = `Delete FROM event_enrollments where id = $1`;
         const values = [id]
         returnArray = DBHelper.requestCount(sql, values);
         return returnArray;
