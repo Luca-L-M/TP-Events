@@ -2,7 +2,7 @@ export default class ValidationHelper
 {
     //valida int
     validarInt = (data) => {
-        if(data.parseInt())
+        if(+data)
         {
             return true;
         }

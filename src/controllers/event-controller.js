@@ -49,8 +49,8 @@ router.get('/:id/enrollment', async (req, res) =>{
 router.post('', Auth.AuthMiddleware, async (req, res) =>{
     try {
         const entity = req.body;
-        const max_capcity = await svc.getMaxCapacity(entity.id_location);
-        if (!(VHelper.fullLetters(entity.name) || VHelper.validarString(entity.descripcion)))
+        const max_capcity = await svc.getMaxCapacityAsync(entity.id_event_location);
+        if (!(VHelper.validarString(entity.name) || VHelper.validarString(entity.descripcion)))
         {
             return res.status(400).send('El name o description están vacíos o tienen menos de tres (3) letras');
         }
