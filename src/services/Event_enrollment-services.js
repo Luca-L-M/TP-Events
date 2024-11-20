@@ -32,9 +32,9 @@ export default class Event_enrollmentServices
     }
 
     //crear enrollment
-    createAsync = async (entity) =>
+    createAsync = async (entity, assistance, max_assistance) =>
     {
-        const returnArray = await repo.createAsync(entity);
+        const returnArray = await repo.createAsync(entity, assistance, max_assistance);
         return returnArray;
     }
 

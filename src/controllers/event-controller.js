@@ -126,18 +126,18 @@ router.post('/:id/enrollment', Auth.AuthMiddleware, async (req, res) =>{
         const entity = req.body;
         const Evento = await svc.getDetailsEventAsync(entity.id_event);
         const existe = await enrollment.getEnrollmentAsync(entity.id_event, entity.id_user);
-        console.log('inscripcion: ', existe); 
-        const today = new Date().toISOString().split('T')[0];
+        const today = Date.now();
         const assistance = await enrollment.getAssistanceAsync(entity.id_event);
+        console.log('inscripcion: ', assistance); 
         if (assistance + 1 > Evento.max_assistance)
         {
             return res.status(400).send('Exceda la capacidad máxima de registrados (max_assistance) al evento.');
         }
-        else if (Evento.start_date > today)
+        else if (Evento.start_date < today)
         {
             return res.status(400).send('El evento ya empezo o ya termino');
         }
-        else if (!Evento.enable_for_enrollment)
+        else if (Evento.enable_for_enrollment)
         {
             return res.status(400).send('El evento no esta habilitado para la inscripcion');
         }
@@ -146,12 +146,13 @@ router.post('/:id/enrollment', Auth.AuthMiddleware, async (req, res) =>{
         }
         else
         {
-            const returnArray = await enrollment.createAsync(entity);
+            const returnArray = await enrollment.createAsync(entity, assistance, Evento.max_assistance);
             if (returnArray == null) return res.status(404).send('Not found');
             else return res.status(201).json(returnArray);
         }
     } catch (e) {
         console.log(e);
+        return res.status(500).send('Error interno');
     }
 });
 

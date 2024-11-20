@@ -107,7 +107,7 @@ export default class Event_enrollmentRepository
     }
 
     //Crear enrollment
-    createAsync = async (entity) =>
+    createAsync = async (entity, assistance, max_assistance) =>
     {
         console.log('inscipcion: ', entity);
         let returnArray = null;
@@ -116,8 +116,10 @@ export default class Event_enrollmentRepository
         Insert into event_enrollments(id_event, id_user, description, registration_date_time, attended, observations, rating)
         Values ($1,$2,$3,$4,$5,$6,$7)`;
         const values = [entity.id_event, entity.id_user, entity.description, today, entity.attended, entity.observation || null, entity.rating || null]
-        const assistances = getAssistanceAsync(entity.id_event);
-        if(assistances + 1 == Evento.max_assistance)
+        returnArray = DBHelper.requestCount(sql, values);
+
+        //Si llega al maximo de assistencias cambia el estado a falso
+        if(assistance + 1 == max_assistance)
         {
             const sql2 = `
             Update events Set enabled_for_enrollment=$2
@@ -125,7 +127,6 @@ export default class Event_enrollmentRepository
             const values2 = [entity.id_event, false]
             const enrollment = DBHelper.requestCount(sql2, values2);
         }
-        returnArray = DBHelper.requestCount(sql, values);
         return returnArray;
     }
 
