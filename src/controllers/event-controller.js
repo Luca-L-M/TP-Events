@@ -124,11 +124,11 @@ router.delete('/:id', Auth.AuthMiddleware, async (req, res) =>{
 router.post('/:id/enrollment', Auth.AuthMiddleware, async (req, res) =>{
     try {
         const entity = req.body;
-        const id_event = req.params.id;
-        const Evento = await svc.getDetailsEventAsync(id_event);
-        const existe = await enrollment.getEnrollmentAsync(id_event, entity.id_user);
+        const Evento = await svc.getDetailsEventAsync(entity.id_event);
+        const existe = await enrollment.getEnrollmentAsync(entity.id_event, entity.id_user);
+        console.log('inscripcion: ', existe); 
         const today = new Date().toISOString().split('T')[0];
-        const assistance = await enrollment.getAssistanceAsync(id_event);
+        const assistance = await enrollment.getAssistanceAsync(entity.id_event);
         if (assistance + 1 > Evento.max_assistance)
         {
             return res.status(400).send('Exceda la capacidad máxima de registrados (max_assistance) al evento.');
