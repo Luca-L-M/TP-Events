@@ -33,16 +33,14 @@ router.get('/:id', async (req, res) =>{
 
 //Listar participantes
 router.get('/:id/enrollment', async (req, res) =>{
-    let respuesta;
     const {id_event} = req.params.id;
     const {filtro} = req.query;
     const returnArray = await enrollment.getAllAsync(id_event, filtro);
     if (returnArray != null)
     {
-        respuesta = res.status(200).json(returnArray);
+        return res.status(200).json(returnArray);
     }
-    else respuesta = res.status(404).send('No se encontro ningun resultado')
-    return respuesta;
+    else return res.status(404).send('No se encontro ningun resultado');
 });
 
 //Crear evento
@@ -128,7 +126,6 @@ router.post('/:id/enrollment', Auth.AuthMiddleware, async (req, res) =>{
         const existe = await enrollment.getEnrollmentAsync(entity.id_event, entity.id_user);
         const today = Date.now();
         const assistance = await enrollment.getAssistanceAsync(entity.id_event);
-        console.log('inscripcion: ', assistance); 
         if (assistance + 1 > Evento.max_assistance)
         {
             return res.status(400).send('Exceda la capacidad máxima de registrados (max_assistance) al evento.');
@@ -179,7 +176,7 @@ router.delete('/:id/enrollment', async (req, res) =>{
                 else return res.status(200).json(returnArray);
             }
         }
-        else respuesta = res.status(401).send('Unauthorized');
+        else return res.status(401).send('Unauthorized');
     } catch (e) {
         console.log(e);
     }
@@ -208,7 +205,7 @@ router.patch('/:id/enrollment/:entero', async (req, res) =>{
                 else return res.status(200).json(returnArray);
             }
         }
-        else respuesta = res.status(401).send('Unauthorized');
+        else return res.status(401).send('Unauthorized');
     } catch (e) {
         console.log(e);
     }
