@@ -33,8 +33,9 @@ router.get('/:id', async (req, res) =>{
 
 //Listar participantes
 router.get('/:id/enrollment', async (req, res) =>{
-    const {id_event} = req.params.id;
-    const {filtro} = req.query;
+    const id_event = req.params.id;
+    const filtro = req.query;
+
     const returnArray = await enrollment.getAllAsync(id_event, filtro);
     if (returnArray != null)
     {
