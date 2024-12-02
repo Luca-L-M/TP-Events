@@ -26,6 +26,7 @@ export default class Event_enrollmentRepository
         WHERE
             E.id_event = $1`;
         let values = [id_event];
+        
         if(filtro.hasOwnProperty("first_name"))
         {
             sql = `${sql} And U.first_name = $${values.length + 1}`;

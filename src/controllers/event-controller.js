@@ -75,6 +75,7 @@ router.post('', Auth.AuthMiddleware, async (req, res) =>{
 router.put('', Auth.AuthMiddleware, async (req, res) =>{
     try {
         const entity = req.body;
+        console.log('putEvento', entity);
         const max_capcity = await svc.getMaxCapacityAsync(entity.id_location);
         if (!(VHelper.validarString(entity.name) || VHelper.validarString(entity.descripcion)))
         {
@@ -103,8 +104,9 @@ router.put('', Auth.AuthMiddleware, async (req, res) =>{
 router.delete('/:id', Auth.AuthMiddleware, async (req, res) =>{
     try {
         const id = req.params.id;
+
         const assistance = await enrollment.getAssistanceAsync(id);
-        if (assistance == null)
+        if (assistance != null)
         {
             return res.status(400).send('Bad request');
         }
